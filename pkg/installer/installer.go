@@ -9,6 +9,7 @@ import (
 
 	"github.com/longhorn/longhorn-preflight/pkg/command"
 	"github.com/longhorn/longhorn-preflight/pkg/packagemanager/apt"
+	"github.com/longhorn/longhorn-preflight/pkg/packagemanager/pacman"
 	"github.com/longhorn/longhorn-preflight/pkg/packagemanager/yum"
 	"github.com/longhorn/longhorn-preflight/pkg/packagemanager/zypper"
 	"github.com/longhorn/longhorn-preflight/pkg/types"
@@ -88,6 +89,26 @@ func NewInstaller(packageManager types.PackageManager) (*Installer, error) {
 			command: zypper.NewCommand(executor),
 			packages: []string{
 				"nfs-client", "open-iscsi",
+			},
+			modules: []string{
+				"nfs", "iscsi_tcp",
+			},
+			services: []string{
+				"iscsid",
+			},
+			spdkDepPackages: []string{
+				"nvme-cli",
+			},
+			spdkDepModules: []string{
+				"nvme-tcp",
+			},
+		}, nil
+	case types.PackageManagerPacman:
+		return &Installer{
+			name:    types.PackageManagerPacman,
+			command: pacman.NewCommand(executor),
+			packages: []string{
+				"nfs-utils", "open-iscsi",
 			},
 			modules: []string{
 				"nfs", "iscsi_tcp",
